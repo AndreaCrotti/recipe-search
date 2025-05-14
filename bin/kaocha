@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+clj -m kaocha.runner
+
+# Local Variables:
+# mode: shell
+# End:
