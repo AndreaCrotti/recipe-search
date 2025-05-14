@@ -1,7 +1,11 @@
-end-to-end-test:
-
 unit-test:
+	./bin/kaocha
 
 lint:
+	clj-kondo --lint src test
 
-run:
+archive:
+	git archive -o andrea_crotti.zip master
+
+end-to-end-test:
+	./bin/end_to_end

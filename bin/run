@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+WORDS="$@"
+
+clj -M -m search data/recipes $WORDS
+
+# Local Variables:
+# mode: sh
+# End:

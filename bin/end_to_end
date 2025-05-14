@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# check if the broccoli-soup-with-stilton.txt is the first result
+# when looking for the string "broccoli stilton soup"
+
+./bin/run "broccoli stilton soup" | head -n 1 > output
+if grep "broccoli-soup-with-stilton.txt" output
+then echo "Success" && exit 0
+else echo "Could not find broccoli-soup-with-stilton.txt" && exit 1
+fi
+
+# Local Variables:
+# mode: sh
+# End:
