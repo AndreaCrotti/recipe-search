@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
-TO_MATCH=$1
+RECIPE_DIRECORY=$1
+TO_MATCH=$2
 
-rg $TO_MATCH recipes/ -l -i --count-matches | sort -t: -k2 -nr
+rg $TO_MATCH $RECIPE_DIRECORY -l -i --count-matches | sort -t: -k2 -nr
