@@ -1,8 +1,10 @@
 (ns search
   (:require
    [clojure.java.io :as io]
+   [clojure.tools.cli :refer [parse-opts]]
    [medley.core :as m]
-   [clojure.string :as string]))
+   [clojure.string :as string]
+   [clojure.string :as str]))
 
 (defonce index (atom {}))
 
@@ -36,7 +38,31 @@
          (apply merge-with +)
          (m/map-vals #(/ % (count words)))
          (into [])
-         (sort-by (complement second)))))
+         (sort-by second)
+         reverse)))
+
+(defn format-results
+  [results]
+  (for [[doc-id rank] results]
+    (format "%s:%s" doc-id (float rank))))
+
+(def cli-options
+  [;; Optional named options here if needed
+   ["-h" "--help"]])
+
+(defn ingest-directory
+  [dir]
+  (printf "Ingesting files from directory %s" dir)
+  (doseq [f (file-seq (io/file dir))
+          :when (.isFile f)]
+    (ingest (slurp f) (str f))))
 
 (defn -main [& args]
-  )
+  (let [{:keys [arguments]} (parse-opts args cli-options)
+        [dir text] arguments]
+    (ingest-directory dir)
+    (->> text
+         search
+         format-results
+         (string/join "\n")
+         printf)))
