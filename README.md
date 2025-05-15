@@ -1,3 +1,5 @@
+# Instructions
+
 ## Recipe search
 
 We have to give users the ability to search for recipes. We have some text files containing recipe descriptions written in English. We would like to be able to search over the set of these text files to find recipes given at a minimum a single word e.g. `tomato`.
@@ -18,3 +20,15 @@ Our requirements have been listed by a key business stakeholder:
 -	Ideally the results will be sorted so that the most relevant result is first in the result list.
 -	Searches should complete quickly so users are not kept waiting – this tool needs to serve many users so lower latency will mean we can serve more concurrent searches - ideally searches will take < 10ms.
 -	Documentation that describes how to set up and run your solution. The easier it is to run your solution (e.g. without needing to install bulky IDEs to build it), the better.
+
+
+# Solution
+
+## Rationale
+
+## How to run
+
+Run tests with `./bin/kaocha`, run the program with `./bin/run "your search terms"`.
+
+## Performances
+

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+./bin/run "broccoli stilton soup" > output
+if grep "broccoli-soup-with-stilton.txt" output
+then echo "Success" && exit 0
+else echo "Could not find broccoli-soup-with-stilton.txt" && exit 1
+fi

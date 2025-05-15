@@ -5,6 +5,7 @@
    [clojure.tools.cli :refer [parse-opts]]
    [medley.core :as m]))
 
+(def MAX_RECIPES 10)
 (defonce index (atom {}))
 
 (defn extract-words
@@ -38,7 +39,8 @@
          (m/map-vals #(/ % (count words)))
          (into [])
          (sort-by second)
-         reverse)))
+         reverse
+         (take MAX_RECIPES))))
 
 (defn format-results
   [results]
@@ -46,13 +48,11 @@
     (format "%s:%s" doc-id (float rank))))
 
 (def cli-options
-  [;; Optional named options here if needed
-   ["-h" "--help"]])
+  [["-h" "--help"]])
 
 (defn ingest-directory
   [dir]
   (reset-index!)
-  (printf "Ingesting files from directory %s" dir)
   (doseq [f (file-seq (io/file dir))
           :when (.isFile f)]
     (ingest (slurp f) (str f))))
