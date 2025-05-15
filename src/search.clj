@@ -42,6 +42,10 @@
          reverse
          (take MAX_RECIPES))))
 
+(defn rank
+  [freqs words]
+  )
+
 (defn format-results
   [results]
   (for [[doc-id rank] results]

@@ -6,6 +6,9 @@
 
 (def pork-larb "Also called larb or laap, this pork dish has a beautiful balance of freshness, crunch and spiciness. There are quite a few ingredients, but preparing and assembling them is quick and simple. You could also add a little cooked diced potato or butternut squash. Little Gem is particularly good for scooping up the meat, but any other lettuce you'd like will also be fine. This is often served with a mango salad.")
 
+(def d1 "doc1.txt")
+(def d2 "doc2.txt")
+
 (defmacro with-data
   [docs & body]
   `(do
@@ -19,27 +22,34 @@
 
 (deftest search-test
   (testing "Word not found"
-    (with-data [[pork-ribs "doc1.txt"]]
+    (with-data [[pork-ribs d1]]
       (is (= [] (search "missing")))))
 
   (testing "Can find matches from one word"
-    (with-data [[pork-ribs "doc1.txt"]]
-      (is (= [["doc1.txt" 1]]
+    (with-data [[pork-ribs d1]]
+      (is (= [[d1 1]]
              (search "pork")))))
 
   (testing "Can find matches from multiple words"
-    (with-data [[pork-ribs "doc1.txt"]]
-      (is (= [["doc1.txt" 1]]
+    (with-data [[pork-ribs d1]]
+      (is (= [[d1 1]]
              (search "pork ribs")))
-      (is (= [["doc1.txt" (/ 1 2)]]
+      (is (= [[d1 (/ 1 2)]]
              (search "pork missing") ))))
 
   (testing "Ingesting multiple documents"
-    (with-data [[pork-ribs "doc1.txt"] [pork-larb "doc2.txt"]]
+    (with-data [[pork-ribs d1] [pork-larb d2]]
       (testing "Return sorted results"
-        (is (= [["doc2.txt" 1], ["doc1.txt" 1]] (search "pork")))))))
+        (is (= [[d2 1], [d1 1]] (search "pork")))))))
 
 (deftest frequencies-test
   (testing "Can generate word frequencies"
-    (is (= {"hello" {"doc1.txt" 1}, "world" {"doc1.txt" 1}}
-           (search/get-words-frequencies "Hello world!" "doc1.txt")))))
+    (is (= {"hello" {d1 1}, "world" {d1 1}}
+           (search/get-words-frequencies "Hello world!" d1)))))
+
+(deftest rank-test
+  (testing "Can rank analysis results"
+    (is (= {"hello" [[d1 (/ 1 2)] [d2 1]]}
+           (search/rank {"hello" {d1 3, d2 1}
+                         "world" {d2 2}}
+                        ["hello" "world"])))))
