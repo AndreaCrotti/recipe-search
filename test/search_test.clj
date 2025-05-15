@@ -14,27 +14,30 @@
       (search/ingest text# doc-id#))
     ~@body))
 
+(defn search [text]
+  (search/search @search/index text))
+
 (deftest search-test
   (testing "Word not found"
     (with-data [[pork-ribs "doc1.txt"]]
-      (is (= [] (search/search "missing")))))
+      (is (= [] (search "missing")))))
 
   (testing "Can find matches from one word"
     (with-data [[pork-ribs "doc1.txt"]]
       (is (= [["doc1.txt" 1]]
-             (search/search "pork")))))
+             (search "pork")))))
 
   (testing "Can find matches from multiple words"
     (with-data [[pork-ribs "doc1.txt"]]
       (is (= [["doc1.txt" 1]]
-             (search/search "pork ribs")))
+             (search "pork ribs")))
       (is (= [["doc1.txt" (/ 1 2)]]
-             (search/search "pork missing") ))))
+             (search "pork missing") ))))
 
   (testing "Ingesting multiple documents"
     (with-data [[pork-ribs "doc1.txt"] [pork-larb "doc2.txt"]]
       (testing "Return sorted results"
-        (is (= [["doc1.txt" 1], ["doc2.txt" 1]] (search/search "pork")))))))
+        (is (= [["doc2.txt" 1], ["doc1.txt" 1]] (search "pork")))))))
 
 (deftest frequencies-test
   (testing "Can generate word frequencies"

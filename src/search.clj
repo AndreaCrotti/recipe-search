@@ -1,10 +1,9 @@
 (ns search
   (:require
    [clojure.java.io :as io]
-   [clojure.tools.cli :refer [parse-opts]]
-   [medley.core :as m]
    [clojure.string :as string]
-   [clojure.string :as str]))
+   [clojure.tools.cli :refer [parse-opts]]
+   [medley.core :as m]))
 
 (defonce index (atom {}))
 
@@ -31,10 +30,10 @@
     (swap! index my-merge)))
 
 (defn search
-  [text]
+  [index text]
   (let [words (extract-words text)]
     (->> words
-         (map #(get @index % {}) ) 
+         (map #(get index % {}) ) 
          (apply merge-with +)
          (m/map-vals #(/ % (count words)))
          (into [])
@@ -52,6 +51,7 @@
 
 (defn ingest-directory
   [dir]
+  (reset-index!)
   (printf "Ingesting files from directory %s" dir)
   (doseq [f (file-seq (io/file dir))
           :when (.isFile f)]
@@ -62,7 +62,7 @@
         [dir text] arguments]
     (ingest-directory dir)
     (->> text
-         search
+         (search @index)
          format-results
          (string/join "\n")
          printf)))
