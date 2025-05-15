@@ -1,9 +1,14 @@
 (ns search
   (:require
+   [clojure.java.io :as io]
    [medley.core :as m]
    [clojure.string :as string]))
 
 (defonce index (atom {}))
+
+(defn extract-words
+  [text]
+  (re-seq #"\w+" text))
 
 (defn reset-index!
   []
@@ -12,7 +17,7 @@
 (defn get-words-frequencies
   [text doc-id]
   (->> text
-       (re-seq #"\w+")
+       extract-words
        (map string/lower-case)
        frequencies
        (m/map-vals (fn [freq] {doc-id freq}))))
@@ -24,8 +29,14 @@
     (swap! index my-merge)))
 
 (defn search
-  [word]
-  (get @index word {}))
+  [text]
+  (let [words (extract-words text)]
+    (->> words
+         (map #(get @index % {}) ) 
+         (apply merge-with +)
+         (m/map-vals #(/ % (count words)))
+         (into [])
+         (sort-by (complement second)))))
 
 (defn -main [& args]
   )
