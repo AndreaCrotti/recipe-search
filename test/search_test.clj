@@ -49,7 +49,7 @@
 
 (deftest rank-test
   (testing "Can rank analysis results"
-    (is (= {"hello" [[d1 (/ 1 2)] [d2 1]]}
+    (is (= [[d2 1] [d1 (/ 1 2)]]
            (search/rank {"hello" {d1 3, d2 1}
                          "world" {d2 2}}
                         ["hello" "world"])))))

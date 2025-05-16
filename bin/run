@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-WORDS=$1
+WORDS="$@"
 
 clj -M -m search data/recipes $WORDS
 

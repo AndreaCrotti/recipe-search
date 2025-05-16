@@ -30,21 +30,20 @@
         my-merge #(merge-with merge % freqs)]
     (swap! index my-merge)))
 
-(defn search
-  [index text]
-  (let [words (extract-words text)]
-    (->> words
-         (map #(get index % {}) ) 
-         (apply merge-with +)
-         (m/map-vals #(/ % (count words)))
-         (into [])
+(defn rank
+  [freqs words]
+  (let [all-docs (set (flatten (map keys (vals freqs))))]
+    (->> (for [d all-docs
+           :let [found (m/filter-vals #(contains? (-> % keys set) d) freqs)]]
+           [d (/ (count found) (count words))])
          (sort-by second)
          reverse
          (take MAX_RECIPES))))
 
-(defn rank
-  [freqs words]
-  )
+(defn search
+  [index words]
+  (let [freqs (m/filter-keys #(contains? (set words) %) index)]
+    (rank freqs words)))
 
 (defn format-results
   [results]
@@ -63,9 +62,9 @@
 
 (defn -main [& args]
   (let [{:keys [arguments]} (parse-opts args cli-options)
-        [dir text] arguments]
+        [dir & words] arguments]
     (ingest-directory dir)
-    (->> text
+    (->> words
          (search @index)
          format-results
          (string/join "\n")
