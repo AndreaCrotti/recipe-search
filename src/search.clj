@@ -37,11 +37,15 @@
   data we have this seems to work well enough, and it was the simplest
   solution I could think of."
   [freqs words]
-  (let [all-docs (set (flatten (map keys (vals freqs))))]
+  (let [all-docs (->> freqs
+                      vals
+                      (map keys)
+                      flatten
+                      set)]
     (->> (for [d all-docs
-           :let [found (m/filter-vals #(contains? (-> % keys set) d) freqs)]]
+               :let [found (m/filter-vals #(contains? (-> % keys set) d) freqs)]]
            [d (/ (count found) (count words))])
-         (sort-by second)               ;
+         (sort-by second)
          reverse
          (take MAX_RECIPES))))
 
@@ -71,3 +75,20 @@
          format-results
          (string/join "\n")
          printf)))
+
+(comment
+  (reset-index!)
+  (ingest-directory "data/recipes")
+  (time
+   (search @index ["potato" "ham"]))
+
+  (time
+   (search @index ["potato" "ham" "steak" "berry"]))
+
+  (time
+   (search @index ["potato"]))
+
+  (search @index ["not-there"])
+
+)
+;; => nil
