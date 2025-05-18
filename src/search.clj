@@ -54,10 +54,14 @@
   (let [freqs (m/filter-keys #(contains? (set words) %) index)]
     (rank freqs words)))
 
+(defn percent
+  [p]
+  (int (* 100 (float p))))
+
 (defn format-results
   [results]
   (for [[doc-id rank] results]
-    (format "%s:%s" doc-id (float rank))))
+    (format "%s:%s%%" doc-id (percent rank))))
 
 (defn ingest-directory
   [dir]
@@ -74,7 +78,7 @@
          (search @index)
          format-results
          (string/join "\n")
-         printf)))
+         println)))
 
 (comment
   (reset-index!)
@@ -85,10 +89,11 @@
   (time
    (search @index ["potato" "ham" "steak" "berry"]))
 
-  (time
+  (def res
    (search @index ["potato"]))
-
-  (search @index ["not-there"])
+  
+  (println (string/join "\n"
+                        (format-results res)))
 
 )
 ;; => nil
