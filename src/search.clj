@@ -45,8 +45,7 @@
     (->> (for [d all-docs
                :let [found (m/filter-vals #(contains? (-> % keys set) d) freqs)]]
            [d (/ (count found) (count words))])
-         (sort-by second)
-         reverse
+         (sort-by second >)
          (take MAX_RECIPES))))
 
 (defn search

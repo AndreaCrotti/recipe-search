@@ -40,7 +40,7 @@
   (testing "Ingesting multiple documents"
     (with-data [[pork-ribs d1] [pork-larb d2]]
       (testing "Return sorted results"
-        (is (= [[d2 1], [d1 1]] (search ["pork"])))))))
+        (is (= [[d1 1], [d2 1]] (search ["pork"])))))))
 
 (deftest frequencies-test
   (testing "Can generate word frequencies"
